@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-field
+      author: Kogut
+      changes:
+        - createTable:
+            tableName: field
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    unique: true
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: selector
+                  type: varchar(255)
+                  constraints:
+                        nullable: false
+              - column:
+                  name: weight
+                  type: FLOAT
+                  constraints:
+                    nullable: false
+
+

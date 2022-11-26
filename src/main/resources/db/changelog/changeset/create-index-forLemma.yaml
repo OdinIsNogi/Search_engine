@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: createIndex-forPage
+      author: kogut
+      changes:
+        - createIndex:
+            clustered: true
+            columns:
+              - column:
+                  descending: true
+                  name: lemma
+              - column:
+                  descending: true
+                  name: site_id
+            indexName: idx_lemma
+            schemaName: search_engine
+            tableName: lemma
+            unique: true

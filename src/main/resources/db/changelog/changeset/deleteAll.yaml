@@ -1,0 +1,24 @@
+databaseChangeLog:
+ - changeSet:
+    id:  delete
+    author:  Kogut
+    changes:
+      - dropTable:
+          tableName: index
+          cascadeConstraints:  true
+
+      - dropTable:
+          tableName: pages
+          cascadeConstraints:  true
+
+      - dropTable:
+          tableName: lemma
+          cascadeConstraints: true
+
+      - dropTable:
+          tableName: field
+          cascadeConstraints: true
+
+      - dropTable:
+          tableName: site
+          cascadeConstraints: true

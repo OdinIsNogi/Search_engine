@@ -1,10 +1,32 @@
-# example values
+spring:
+  liquibase:
+    enabled: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/search_engine?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: GBACK
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      use-new-id-generator-mappings: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        enable_lazy_load_no_trans: true
+    open-in-view: false
+
+logging:
+  level:
+    root: warn
+  file:
+    name: rootLog.log
 
 indexing-settings:
   sites:
-    - url: https://www.lenta.ru
-      name: Лента.ру
-    - url: https://www.skillbox.ru
-      name: Skillbox
-    - url: https://www.playback.ru
+#    - url: https://lenta.ru
+#      name: Лента.ру
+#    - url: https://skillbox.ru
+#      name: Skillbox
+    - url: https://playback.ru
       name: PlayBack.Ru

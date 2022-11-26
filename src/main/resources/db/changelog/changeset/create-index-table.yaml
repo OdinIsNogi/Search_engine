@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+     id: create-index-table
+     author: Kogut
+     changes:
+       - createTable:
+           tableName: index
+           columns:
+             - column:
+                 name: id
+                 type: bigint
+                 autoIncrement: true
+                 constraints:
+                   primaryKey: true
+                   nullable: false
+             - column:
+                 name: rank
+                 type: float
+                 constraints:
+                   nullable: false
+             - column:
+                 name: lemma_id
+                 type: bigint
+                 constraints:
+                   foreignKeyName: lemma_id
+                   referencedTableName: lemma
+                   referencedColumnNames: id
+                   deleteCascade: true
+             - column:
+                 name: page_id
+                 type: bigint
+                 constraints:
+                   foreignKeyName: page_id
+                   referencedTableName: pages
+                   referencedColumnNames: id
+                   deleteCascade: true

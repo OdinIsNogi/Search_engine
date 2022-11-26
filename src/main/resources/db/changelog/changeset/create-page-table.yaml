@@ -1,0 +1,38 @@
+databaseChangeLog:
+- changeSet:
+    id: create-pages
+    author: Kogut
+    changes:
+      - createTable:
+          tableName: pages
+          columns:
+            - column:
+                name: id
+                type: BIGINT
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: path
+                type: varchar(255)
+                constraints:
+                  unique: false
+                  nullable: false
+            - column:
+                name: code
+                type: INT
+                constraints:
+                  nullable: false
+            - column:
+                name: context
+                type: MEDIUMTEXT
+            - column:
+                name: site_id
+                type: BIGINT
+                constraints:
+                  nullable: false
+                  foreignKeyName: site_id
+                  referencedTableName: site
+                  referencedColumnName: id
+                  deleteCascade: true
