@@ -52,7 +52,7 @@ public class IndexServiceImpl implements IndexService {
         if (isIndexing) {
             return new IndexResponse(true, "Индексация уже запущена");
         }
-        isIndexing = true;
+
         for (Site s : sites) {
             if (s.getStatus() == Status.INDEXING) continue;
             prepareForIndexing(s);
@@ -61,6 +61,7 @@ public class IndexServiceImpl implements IndexService {
     }
 
     private void prepareForIndexing(Site site) throws SQLException {
+        isIndexing = true;
         Site siteToDelete = siteRepository.findByUrl(site.getUrl());
         executorService = Executors.newFixedThreadPool(sitesList.getSites().size());
         if (siteToDelete != null) {

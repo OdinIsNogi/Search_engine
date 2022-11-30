@@ -102,6 +102,7 @@ public class Searcher {
             relevantPage.setUri(page.getPath());
             try {
                 String title = Jsoup.parse(page.getContext()).getElementsByTag("title").get(0).text();
+
                 relevantPage.setTitle(title);
             } catch (IndexOutOfBoundsException e) {
                 relevantPage.setTitle("title not found");
@@ -134,14 +135,15 @@ public class Searcher {
 
         for (String cleaned : cleanedHtml) {
             for (String request : searchRequestLemmas) {
-                if (cleaned.contains(request)) {
+                int start = cleaned.indexOf(request);
+                if (start >= 0) {
+                    int end = start + request.length();
                     String snippet = cleaned.replace(request, "<b>" + request + "</b>");
-                    int start = snippet.indexOf("<b>");
-                    int end = snippet.indexOf("</b>");
-                    snippet = snippet.substring(Math.max(0, start - 30), Math.min(end + 30, snippet.length()));
+                    snippet = cleaned.substring(Math.max(0, start - 30), Math.min(end + 30, snippet.length()));
                     result.append(snippet + "\n");
                 }
-        }}
+            }
+        }
 
 
         return result.toString();

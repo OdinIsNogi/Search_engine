@@ -1,5 +1,6 @@
 package searchengine.controllers;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,7 +11,7 @@ import searchengine.services.IndexService;
 
 import java.sql.SQLException;
 
-@RestController
+@RestController()
 public class IndexController {
     private final IndexServiceImpl service;
 
@@ -18,14 +19,20 @@ public class IndexController {
         this.service = service;
     }
 
-    @GetMapping("/startIndexing")
-    public IndexResponse startIndexing() throws SQLException {
-       return service.startIndexing();
+    @GetMapping("/api/startIndexing")
+    public IndexResponse startIndexing(Model model) throws SQLException {
+        model.addAttribute("startIndexing", service.startIndexing());
+        return service.startIndexing();
     }
 
-    @PostMapping("/indexPage")
+    @PostMapping("/api/indexPage")
     public IndexResponse indexPage(@RequestParam String url) throws SQLException {
         return service.indexPage(url);
+    }
+
+    @GetMapping("api/stopIndexing")
+    private IndexResponse stopIndexing(){
+        return service.stopIndexing();
     }
 
 }

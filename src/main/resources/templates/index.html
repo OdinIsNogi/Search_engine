@@ -34,6 +34,18 @@
   </script>
   
   <script defer src="/assets/js/scripts.js?v=38874865"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#locales").change(function () {
+        var selectedOption = $("#locales").val();
+        if(selectedOption != '') {
+          window.location.replace('?lang='+selectedOption);
+        }
+      });
+    });
+
+  </script>
 
 </head>
 <body class="Site">
@@ -63,23 +75,29 @@
       <div class="Site-loadingIsComplete">
         <main class="Tabs Tabs_column Middle-main">
           <div class="Column">
-            <div class="Tabs-links"><a class="Tabs-link Tabs-link_ACTIVE" href="#dashboard"><img class="Tabs-icon" src="/assets/img/icons/dashboard.svg" alt="dashboard.svg"/><span class="Tabs-linkText">Dashboard</span></a><a class="Tabs-link" href="#management"><img class="Tabs-icon" src="/assets/img/icons/management.svg" alt="management.svg"/><span class="Tabs-linkText">Management</span></a><a class="Tabs-link" href="#search"><img class="Tabs-icon" src="/assets/img/icons/search.svg" alt="search.svg"/><span class="Tabs-linkText">Search</span></a>
+            <div class="Tabs-links"><a class="Tabs-link Tabs-link_ACTIVE" href="#dashboard"><img class="Tabs-icon" src="/assets/img/icons/dashboard.svg" alt="dashboard.svg"/><span class="Tabs-linkText" th:text="#{topbar.dashboard}">Dashboard</span></a><a class="Tabs-link" href="#management"><img class="Tabs-icon" src="/assets/img/icons/management.svg" alt="management.svg"/><span class="Tabs-linkText" th:text="#{topbar.management}">Management</span></a><a class="Tabs-link" href="#search"><img class="Tabs-icon" src="/assets/img/icons/search.svg" alt="search.svg"/><span class="Tabs-linkText" th:text="#{topbar.search}">Search</span></a>
             </div>
+            <span th:text="#{topbar.locale}">Выбор языка</span>
+            <select id="locales">
+              <option value=" "></option>
+              <option value="en">English</option>
+              <option value="ru">Русский</option>
+            </select>
           </div>
           <div class="Tabs-wrap">
             <div class="Tabs-block" id="dashboard">
               <div class="Section">
                 <div class="Section-header">
-                  <h2 class="Section-title">Dashboard
+                  <h2 class="Section-title" th:text="#{topbar.dashboard}">Dashboard
                   </h2>
                 </div>
                 <div class="Statistics">
                   <div class="Statistics-info">
-                    <div class="Statistics-block"><span class="Statistics-amount" id="totalSites"></span><span class="Statistics-title">sites</span>
+                    <div class="Statistics-block"><span class="Statistics-amount" id="totalSites"></span><span class="Statistics-title" th:text="#{topbar.sites}">sites</span>
                     </div>
-                    <div class="Statistics-block"><span class="Statistics-amount" id="totalPages"></span><span class="Statistics-title">pages</span>
+                    <div class="Statistics-block"><span class="Statistics-amount" id="totalPages"></span><span class="Statistics-title" th:text="#{topbar.pages}">pages</span>
                     </div>
-                    <div class="Statistics-block"><span class="Statistics-amount" id="totalLemmas"></span><span class="Statistics-title">lemmas</span>
+                    <div class="Statistics-block"><span class="Statistics-amount" id="totalLemmas"></span><span class="Statistics-title" th:text="#{topbar.lemmas}">lemmas</span>
                     </div>
                   </div>
                   <div class="HideBlock Statistics-example">
@@ -100,20 +118,20 @@
             <div class="Tabs-block" id="management">
               <div class="Section">
                 <div class="Section-header">
-                  <h2 class="Section-title">Management
+                  <h2 class="Section-title" th:text="#{topbar.management}">Management
                   </h2>
                 </div>
                 <div>
-                  <button class="btn btn_primary API-startIndexing" data-btntype="check" data-check="false" data-alttext="Stop indexing" data-send="startIndexing" data-altsend="stopIndexing"><span class="btn-content">Start indexing</span>
+                  <button class="btn btn_primary API-startIndexing" data-send="startIndexing" data-altsend="stopIndexing"><span class="btn-content" th:text="#{topbar.start}">Start indexing</span>
                   </button>
                 </div><br>
                 <div class="UpdatePageBlock">
-                  <h3>Add/update page:
+                  <h3 th:text="#{topbar.addupdatepage}">
                   </h3>
                   <form class="form form_close" action="#" method="post" data-send="indexPage">
                     <div class="form-group form-group_row">
-                      <input class="form-input" id="page" name="page" type="text"/>
-                      <button class="btn btn_primary form-btn" type="submit">Add/update
+                      <input class="form-input" th:placeholder="#{searchbar.placeholder}" id="page" name="page" type="text"/>
+                      <button class="btn btn_primary form-btn" type="submit" th:text="#{topbar.addupdate}">Add/update
                       </button>
                     </div>
                   </form>
@@ -123,7 +141,7 @@
             <div class="Tabs-block" id="search">
               <div class="Section">
                 <div class="Section-header">
-                  <h2 class="Section-title">Search
+                  <h2 class="Section-title" th:text="#{topbar.search}">Search
                   </h2>
                 </div>
                 <form class="form form_close" action="#" method="post" data-send="search" data-sendlimit="10">
@@ -138,7 +156,7 @@
                   </div>
                   <div class="form-group form-group_row">
                     <input class="form-input" id="query" name="query" type="text" placeholder="Query"/>
-                    <button class="btn btn_primary form-btn" type="submit" >Search
+                    <button class="btn btn_primary form-btn" type="submit" th:text="#{topbar.search}">Search
                     </button>
                   </div>
                 </form>
