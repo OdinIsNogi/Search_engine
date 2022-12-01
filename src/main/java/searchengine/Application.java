@@ -12,6 +12,9 @@ import searchengine.services.SearchServiceImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @SpringBootApplication
@@ -41,6 +44,4 @@ public class Application {
 //        });
 //        t.start();
     }
-
-
 }

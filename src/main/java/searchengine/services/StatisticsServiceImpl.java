@@ -46,10 +46,21 @@ public class StatisticsServiceImpl implements StatisticsService {
             item.setUrl(site.getUrl());
             int pages = pageRepository.countAll();
             int lemmas = lemmaRepository.countAll();
+            Site temp = siteRepository.findByUrl(site.getUrl());
+            String error;
+            String status;
+            if (temp == null) {
+                status = "";
+                error = "";
+            } else {
+                status = temp.getStatus().toString();
+                error = temp.getLastError();
+            }
+
             item.setPages(pages);
             item.setLemmas(lemmas);
-            item.setStatus(siteRepository.findByUrl(site.getUrl()).getStatus().toString());
-            item.setError(siteRepository.findByUrl(site.getUrl()).getLastError());
+            item.setStatus(status);
+            item.setError(error);
             item.setStatusTime(System.currentTimeMillis());
             total.setPages(total.getPages() + pages);
             total.setLemmas(total.getLemmas() + lemmas);

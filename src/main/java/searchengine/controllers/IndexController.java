@@ -20,8 +20,7 @@ public class IndexController {
     }
 
     @GetMapping("/api/startIndexing")
-    public IndexResponse startIndexing(Model model) throws SQLException {
-        model.addAttribute("startIndexing", service.startIndexing());
+    public IndexResponse startIndexing() throws SQLException {
         return service.startIndexing();
     }
 
