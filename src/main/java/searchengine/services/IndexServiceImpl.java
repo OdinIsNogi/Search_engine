@@ -107,13 +107,10 @@ public class IndexServiceImpl implements IndexService {
 
             site.setStatusTime(new Date());
 
-            for (Index i : indexes) {
-                if(!stopped) {
-                    indexRepository.save(i);
-                } else {
-                    break;
-                }
-            }
+
+            indexRepository.saveAll(indexes);
+
+
             if (!stopped) {
                 site.setStatus(Status.INDEXED);
             }
