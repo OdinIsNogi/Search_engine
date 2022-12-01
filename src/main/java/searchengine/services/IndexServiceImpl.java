@@ -110,6 +110,8 @@ public class IndexServiceImpl implements IndexService {
             for (Index i : indexes) {
                 if(!stopped) {
                     indexRepository.save(i);
+                } else {
+                    break;
                 }
             }
             if (!stopped) {
