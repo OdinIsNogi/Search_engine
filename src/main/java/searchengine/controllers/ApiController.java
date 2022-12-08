@@ -32,10 +32,11 @@ public class ApiController {
     @GetMapping("/search")
     public SearchResponse search(@RequestParam String query,
                                  @RequestParam(required = false) String site,
-                                 @RequestParam(required = false,defaultValue = "0") int offset,
-                                 @RequestParam(required = false,defaultValue = "20") int limit) throws IOException {
-
-        return searchService.search(query, site, offset, limit);
+                                 @RequestParam(required = false, defaultValue = "0") int offset,
+                                 @RequestParam(required = false, defaultValue = "20") int limit) throws IOException {
+        SearchResponse response = searchService.search(query, site, offset, limit);
+        System.out.println(response);
+        return response;
     }
 
 }

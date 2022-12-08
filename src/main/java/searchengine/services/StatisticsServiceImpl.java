@@ -29,23 +29,22 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final PageRepository pageRepository;
     @Autowired
     private final SiteRepository siteRepository;
-    private final SitesList sites;
 
     @Override
     public StatisticsResponse getStatistics() {
-
+        List<Site> sitesList = siteRepository.findAll();
         TotalStatistics total = new TotalStatistics();
-        total.setSites(sites.getSites().size());
+        total.setSites(sitesList.size());
         total.setIndexing(true);
 
         List<DetailedStatisticsItem> detailed = new ArrayList<>();
-        List<Site> sitesList = sites.getSites();
+
         for (Site site : sitesList) {
             DetailedStatisticsItem item = new DetailedStatisticsItem();
             item.setName(site.getName());
             item.setUrl(site.getUrl());
-            int pages = pageRepository.countAll();
-            int lemmas = lemmaRepository.countAll();
+            int pages = pageRepository.countAll(site.getId());
+            int lemmas = lemmaRepository.countAll(site.getId());
             Site temp = siteRepository.findByUrl(site.getUrl());
             String error;
             String status;

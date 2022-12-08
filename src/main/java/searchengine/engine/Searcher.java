@@ -139,7 +139,7 @@ public class Searcher {
                 if (start >= 0) {
                     int end = start + request.length();
                     String snippet = cleaned.replace(request, "<b>" + request + "</b>");
-                    snippet = cleaned.substring(Math.max(0, start - 30), Math.min(end + 30, snippet.length()));
+                    snippet = snippet.substring(Math.max(0, start - 30), Math.min(end + 30, snippet.length()));
                     result.append(snippet + "\n");
                 }
             }

@@ -4,14 +4,18 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jsoup.Connection;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
 import searchengine.model.*;
+import searchengine.repository.IndexRepository;
 
 import java.io.IOException;
 import java.util.*;
@@ -72,16 +76,15 @@ public class Parser extends RecursiveAction {
     @Override
     public void compute() {
         if (isCanceled) return;
-        List<Parser> tasks = new ArrayList<>();
-        Connection connection = Jsoup.connect(url).timeout(10 * 1000)
-                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                .referrer("https://www.google.com")
-                .followRedirects(true);
-
-        Page curPage = addPage(connection);
-        if (curPage == null) return;
         try {
-            sleep(100);
+
+            List<Parser> tasks = new ArrayList<>();
+            Connection connection = Jsoup.connect(url).timeout(20_000)
+                    .userAgent("AdvancedSearchBot")
+                    .referrer("http://www.google.com/");
+
+            Page curPage = addPage(connection);
+            if (curPage == null) return;
 
             Document doc = connection.get();
 
@@ -91,30 +94,40 @@ public class Parser extends RecursiveAction {
             curLemmas.forEach((lemma, amount) -> lemma.setIndexes(indexes));
 
             Elements elements = doc.select("a");
+
             for (Element e : elements) {
                 String child = e.absUrl("href");
 
+                String urlTemp = shortLink(child);
                 if (isCorrect(child)) {
                     Parser parser = new Parser(child, root, indexToDb, pagesToDb, lemmaToDb);
                     tasks.add(parser);
-//                    log.info("Temp: " + child);
+                    log.info("Temp: " + child);
                 }
             }
-        } catch (IOException | InterruptedException e) {
+            ForkJoinTask.invokeAll(tasks);
+        } catch (IOException e) {
             log.error("ERROR during parsing" + url);
         }
-        ForkJoinTask.invokeAll(tasks);
+    }
 
+    public boolean isCorrect(String child) {
+        return child.contains(root)
+                && !child.contains("#")
+                && !child.contains("?")
+                && !child.matches(".+(.jpg|.png|.pdf)$");
     }
 
     //добавляем страницы
     private Page addPage(Connection connection) throws IOException {
         synchronized (pagesToDb) {
-            String shortLink = shortLink();
-            if (shortLink.equals("")) {
-                shortLink = root;
+            String shortLink = shortLink(url);
+
+            if (pagesToDb.containsKey(shortLink)) {
+                log.error("ВЫКИДЫВАЕМ: " + shortLink);
+                return null;
             }
-            if (pagesToDb.containsKey(shortLink)) return null;
+
             Page page = new Page();
             page.setPath(shortLink);
 
@@ -122,8 +135,9 @@ public class Parser extends RecursiveAction {
                 connection.ignoreHttpErrors(true);
                 Connection.Response response = connection.execute();
                 int status = response.statusCode();
-                if (status != 200 && (response.contentType() == null || !response.contentType().startsWith("html/text")))
-                    throw new UnsupportedMimeTypeException("Bad connection", "unsupported type", response.url().toString());
+
+                if (status != 200 && (response.contentType() == null || !response.contentType().equals("html/text")))
+                    throw new UnsupportedMimeTypeException("error", "unknown type", response.url().toString());
 
                 page.setCode(status);
                 page.setContext(response.body());
@@ -177,7 +191,7 @@ public class Parser extends RecursiveAction {
             if (page.getCode() == 200) {
                 for (Field field : fields) {
                     lemmaMap.forEach((lemma, amount) -> {
-                        Pair<String, String> key = Pair.of(shortLink(), lemma.getLemma());
+                        Pair<String, String> key = Pair.of(shortLink(url), lemma.getLemma());
                         Index index = indexesThread.get(key);
                         if (index != null) index.setRank(index.getRank() + field.getWeight() * amount);
                         else {
@@ -195,20 +209,17 @@ public class Parser extends RecursiveAction {
         }
     }
 
-    private String shortLink() {
+    private String shortLink(String url) {
         return url.replace(root, "");
     }
 
-    //&& !child.matches(".+\\.[A-z]{1,5}$
-    public boolean isCorrect(String child) {
-        return child.contains(root) && !child.contains("#") && !child.contains("?");
-    }
 
-    public ArrayList<Index> getIndexToDb() {
-        return new ArrayList<>((indexToDb.values()));
+    public List<Index> getIndexToDb() {
+        return new ArrayList<>(indexToDb.values());
     }
 
     public static void setIsCanceled(boolean isCanceled) {
         Parser.isCanceled = isCanceled;
     }
+
 }

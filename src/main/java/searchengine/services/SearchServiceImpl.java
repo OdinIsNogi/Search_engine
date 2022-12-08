@@ -34,7 +34,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public SearchResponse search(String query, String site, int offset, int limit) throws IOException {
         relevantPages = new ArrayList<>();
-        List<Site> sites = sitesList.getSites();
+        List<Site> sites = siteRepository.findAll();
 
         if (query.isBlank()) {
             return new SearchResponse(false, "Задан пустой поисковой запрос");

@@ -19,6 +19,6 @@ public interface PageRepository extends CrudRepository<Page, Long> {
     @Query(value = "DELETE FROM pages where pages.site_id=:id", nativeQuery = true)
     void deleteAllBySiteId(@Param("id") long id);
 
-    @Query(value = "SELECT COUNT(*) from pages", nativeQuery = true)
-    int countAll();
+    @Query(value = "SELECT COUNT(*) from pages where pages.site_id=:id", nativeQuery = true)
+    int countAll(@Param("id") long id);
 }

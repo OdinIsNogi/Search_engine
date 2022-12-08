@@ -6,12 +6,12 @@ databaseChangeLog:
         - createIndex:
             clustered: true
             columns:
-            - column:
-               descending: true
-               name: path
-            - column:
-                descending: true
-                name:  site_id
+              - column:
+                  descending: true
+                  name: path
+              - column:
+                  descending: true
+                  name: site_id
             indexName: idx_path
             schemaName: search_engine
             tableName: pages

@@ -20,8 +20,8 @@ public interface LemmaRepository extends CrudRepository<Lemma, Long> {
 
     List<Lemma> findAll();
 
-    @Query(value = "SELECT count(*) from lemma",nativeQuery = true)
-    int countAll();
+    @Query(value = "SELECT count(*) from lemma where lemma.site_id=:id",nativeQuery = true)
+    int countAll(@Param("id") long id);
 
     @Modifying
     @Transactional

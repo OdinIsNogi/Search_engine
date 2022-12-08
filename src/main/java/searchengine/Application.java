@@ -1,22 +1,21 @@
 package searchengine;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import searchengine.dto.search.SearchResponse;
-
 import searchengine.services.IndexServiceImpl;
 import searchengine.services.SearchServiceImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-
+@Slf4j
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) throws SQLException, IOException {
@@ -25,9 +24,7 @@ public class Application {
         IndexServiceImpl index = context.getBean(IndexServiceImpl.class);
         SearchServiceImpl search = context.getBean(SearchServiceImpl.class);
 //        index.indexPage("https://playback.ru");
-//        index.startIndexing();
-//        SearchResponse response = search.search("прочность радио", "https://playback.ru", 0, 20);
-//        System.out.println(response);
+        index.startIndexing();
 
 
 //                Thread t = new Thread(new Runnable() {

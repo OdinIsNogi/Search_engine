@@ -20,15 +20,14 @@ spring:
 
 logging:
   level:
-    root: warn
+    root: info
   file:
-    name: rootLog.log
+    name: logs/rootLog.log
 
 indexing-settings:
   sites:
-#    - url: https://lenta.ru
-#      name: Лента.ру
-#    - url: https://skillbox.ru
-#      name: Skillbox
-    - url: https://playback.ru
-      name: PlayBack.Ru
+    - url: https://metanit.com
+      name: meta
+    
+    - url: http://www.playback.ru/
+      name: playback

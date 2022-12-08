@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import searchengine.config.SitesList;
 import searchengine.engine.Parser;
 import searchengine.model.Index;
+import searchengine.model.Page;
 import searchengine.model.Site;
 import searchengine.model.Status;
 import searchengine.dto.index.IndexResponse;
@@ -13,10 +14,7 @@ import searchengine.repository.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
@@ -63,7 +61,7 @@ public class IndexServiceImpl implements IndexService {
     private void prepareForIndexing(Site site) throws SQLException {
         isIndexing = true;
         Site siteToDelete = siteRepository.findByUrl(site.getUrl());
-        executorService = Executors.newFixedThreadPool(sitesList.getSites().size());
+        executorService = Executors.newWorkStealingPool();
         if (siteToDelete != null) {
             lemmaRepository.deleteAllBySiteId(siteToDelete.getId());
             pageRepository.deleteAllBySiteId(siteToDelete.getId());
@@ -98,15 +96,12 @@ public class IndexServiceImpl implements IndexService {
             indexes = parser.getIndexToDb();
 
 //           isIndexing = false;
-
-
-            for (int i = 0; i < indexes.size(); i++) {
-                indexes.get(i).getPage().setSite(site);
-                indexes.get(i).getLemma().setSite(site);
+            for (Index index : indexes) {
+                index.getPage().setSite(site);
+                index.getLemma().setSite(site);
             }
 
             site.setStatusTime(new Date());
-
 
             indexRepository.saveAll(indexes);
 

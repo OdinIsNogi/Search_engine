@@ -7,10 +7,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import searchengine.model.Site;
 
+import java.util.List;
+
 @Repository
 public interface SiteRepository extends CrudRepository<Site, Long> {
     @Transactional
     void deleteByUrl(String name);
-//    @Query(value = "SELECT IFNULL(site.s)", nativeQuery = true)
+
     Site findByUrl(String url);
+
+    @Transactional
+    @Query(value = "SELECT * FROM site", nativeQuery = true)
+    List<Site> findAll();
 }

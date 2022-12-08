@@ -35,7 +35,6 @@ public class Lemma {
     @OneToMany(mappedBy = "lemma", cascade = CascadeType.ALL)
     private Set<Index> indexes;
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

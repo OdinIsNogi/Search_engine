@@ -122,7 +122,11 @@
                   </h2>
                 </div>
                 <div>
-                  <button class="btn btn_primary API-startIndexing" data-send="startIndexing" data-altsend="stopIndexing"><span class="btn-content" th:text="#{topbar.start}">Start indexing</span>
+                  <button class="btn btn_primary API-startIndexing"
+                          data-btntype="check" data-check="false"
+                          th:data-alttext="#{management.stopIndexing}" data-alttext=""
+                          data-send="startIndexing" data-altsend="stopIndexing">
+                    <span class="btn-content" th:text="#{management.startIndexing}"></span>
                   </button>
                 </div><br>
                 <div class="UpdatePageBlock">
