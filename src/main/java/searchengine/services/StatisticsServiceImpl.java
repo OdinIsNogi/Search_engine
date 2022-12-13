@@ -43,15 +43,19 @@ public class StatisticsServiceImpl implements StatisticsService {
         total.setIndexing(true);
 
         List<DetailedStatisticsItem> detailed = new ArrayList<>();
-
+        int pages;
+        int lemmas;
         for (Site site : sitesList) {
             DetailedStatisticsItem item = new DetailedStatisticsItem();
             item.setName(site.getName());
             item.setUrl(site.getUrl());
-
-            int pages = site.getParser().countPages();
-            int lemmas = site.getParser().countLemmas();
-
+            if (site.getStatus() == Status.INDEXING) {
+                pages = site.getParser().countPages();
+                lemmas = site.getParser().countLemmas();
+            } else {
+                pages = pageRepository.countAll(site.getId());
+                lemmas = lemmaRepository.countAll(site.getId());
+            }
             Site temp = siteRepository.findByUrl(site.getUrl());
             String error;
             String status;

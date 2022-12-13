@@ -20,7 +20,6 @@ import java.util.Set;
 @Entity
 public class Site {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private long id;
 
