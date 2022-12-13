@@ -8,7 +8,9 @@ import searchengine.dto.statistics.DetailedStatisticsItem;
 import searchengine.dto.statistics.StatisticsData;
 import searchengine.dto.statistics.StatisticsResponse;
 import searchengine.dto.statistics.TotalStatistics;
+import searchengine.engine.Parser;
 import searchengine.model.Site;
+import searchengine.model.Status;
 import searchengine.repository.LemmaRepository;
 import searchengine.repository.PageRepository;
 import searchengine.repository.SiteRepository;
@@ -22,17 +24,20 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class StatisticsServiceImpl implements StatisticsService {
 
-    private final Random random = new Random();
     @Autowired
     private final LemmaRepository lemmaRepository;
     @Autowired
     private final PageRepository pageRepository;
     @Autowired
     private final SiteRepository siteRepository;
+    @Autowired
+    private SitesList sites;
+
 
     @Override
     public StatisticsResponse getStatistics() {
-        List<Site> sitesList = siteRepository.findAll();
+//        List<Site> sitesList = siteRepository.findAll();
+        List<Site> sitesList = sites.getSites();
         TotalStatistics total = new TotalStatistics();
         total.setSites(sitesList.size());
         total.setIndexing(true);
@@ -43,8 +48,10 @@ public class StatisticsServiceImpl implements StatisticsService {
             DetailedStatisticsItem item = new DetailedStatisticsItem();
             item.setName(site.getName());
             item.setUrl(site.getUrl());
-            int pages = pageRepository.countAll(site.getId());
-            int lemmas = lemmaRepository.countAll(site.getId());
+
+            int pages = site.getParser().countPages();
+            int lemmas = site.getParser().countLemmas();
+
             Site temp = siteRepository.findByUrl(site.getUrl());
             String error;
             String status;

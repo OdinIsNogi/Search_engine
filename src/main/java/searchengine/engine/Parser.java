@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Thread.sleep;
 
@@ -97,8 +98,6 @@ public class Parser extends RecursiveAction {
 
             for (Element e : elements) {
                 String child = e.absUrl("href");
-
-                String urlTemp = shortLink(child);
                 if (isCorrect(child)) {
                     Parser parser = new Parser(child, root, indexToDb, pagesToDb, lemmaToDb);
                     tasks.add(parser);
@@ -143,6 +142,8 @@ public class Parser extends RecursiveAction {
                 page.setContext(response.body());
                 pagesToDb.put(shortLink, page);
                 log.info("Ссылка - " + shortLink);
+                int i = countPages();
+                log.warn(String.valueOf(i));
                 return page;
             } catch (UnsupportedMimeTypeException mimeTypeEx) {
                 log.warn(mimeTypeEx.getUrl() + " - unsupported type: photo,gif, etc.");
@@ -222,4 +223,11 @@ public class Parser extends RecursiveAction {
         Parser.isCanceled = isCanceled;
     }
 
-}
+    public int countPages() {
+        return pagesToDb.size();
+    }
+
+    public int countLemmas() {
+        return lemmaToDb.size();
+    }
+ }

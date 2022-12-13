@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
+import searchengine.engine.Parser;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -22,6 +23,8 @@ public class Site {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private long id;
+
+    private transient Parser parser;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", columnDefinition = "ENUM('M','S')", nullable = false)

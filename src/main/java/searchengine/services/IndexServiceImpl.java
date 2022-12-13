@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +42,6 @@ public class IndexServiceImpl implements IndexService {
     boolean stopped;
     boolean isIndexing;
     private ExecutorService executorService;
-
 
     //Получает список сайтов и проверяет статус индексации
     @Override
@@ -89,13 +89,12 @@ public class IndexServiceImpl implements IndexService {
             Parser.setIsCanceled(false);
             Parser.setFields(fieldRepository.findAll());
             Parser parser = new Parser(site.getUrl());
-
+            site.setParser(parser);
             ForkJoinPool pool = ForkJoinPool.commonPool();
             pool.invoke(parser);
 
             indexes = parser.getIndexToDb();
 
-//           isIndexing = false;
             for (Index index : indexes) {
                 index.getPage().setSite(site);
                 index.getLemma().setSite(site);
@@ -189,5 +188,6 @@ public class IndexServiceImpl implements IndexService {
     public void deleteAllIndexes() {
         indexRepository.deleteAll();
     }
+
 
 }
