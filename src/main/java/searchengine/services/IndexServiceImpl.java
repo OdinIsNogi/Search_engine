@@ -60,12 +60,12 @@ public class IndexServiceImpl implements IndexService {
 
     private void prepareForIndexing(Site site) throws SQLException {
         isIndexing = true;
-        Site siteToDelete = siteRepository.findByUrl(site.getUrl());
+//        Site siteToDelete = siteRepository.findByUrl(site.getUrl());
         executorService = Executors.newWorkStealingPool();
-        if (siteToDelete != null) {
-            lemmaRepository.deleteAllBySiteId(siteToDelete.getId());
-            pageRepository.deleteAllBySiteId(siteToDelete.getId());
-            siteRepository.deleteByUrl(siteToDelete.getUrl());
+        if (site != null) {
+            lemmaRepository.deleteAllBySiteId(site.getId());
+            pageRepository.deleteAllBySiteId(site.getId());
+            siteRepository.deleteByUrl(site.getUrl());
         }
 
         executorService.execute(() -> {
