@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import searchengine.dto.search.SearchResponse;
+import searchengine.engine.Parser;
 import searchengine.services.IndexServiceImpl;
 import searchengine.services.SearchServiceImpl;
 
@@ -23,8 +24,10 @@ public class Application {
 
         IndexServiceImpl index = context.getBean(IndexServiceImpl.class);
         SearchServiceImpl search = context.getBean(SearchServiceImpl.class);
-//        index.indexPage("https://playback.ru");
-        index.startIndexing();
+
+//        parser.compute();
+//        index.indexPage("https://skillbox.ru/media/design/Shinolebedi/-4");
+//        index.startIndexing();
 
 
 //                Thread t = new Thread(new Runnable() {

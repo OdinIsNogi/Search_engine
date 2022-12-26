@@ -21,6 +21,7 @@ import java.util.Set;
 public class Site {
     @Id
     @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     private transient Parser parser;

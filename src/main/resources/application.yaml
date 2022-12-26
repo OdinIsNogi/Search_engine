@@ -4,6 +4,8 @@ spring:
   liquibase:
     enabled: true
   datasource:
+    hikari:
+      auto-commit: false
     url: jdbc:mysql://localhost:3306/search_engine?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: ПИФСЛ
@@ -14,8 +16,12 @@ spring:
     show-sql: true
     properties:
       hibernate:
+        jdbc:
+          batch_size: 30
         dialect: org.hibernate.dialect.MySQL5Dialect
         enable_lazy_load_no_trans: true
+        order_inserts: true
+        generate_statistics: true
     open-in-view: false
 
 logging:
@@ -26,10 +32,13 @@ logging:
 
 indexing-settings:
   sites:
-    - url: https://metanit.com
-      name: meta
-      id: 3
-    
-    - url: http://www.playback.ru/
-      name: playback
-      id: 10
+#    - url: http://www.playback.ru/
+#      name: playback
+#    - url: https://metanit.com
+#      name: meta
+    - url: https://skillbox.ru/
+      name: skill
+
+
+
+

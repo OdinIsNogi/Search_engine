@@ -19,10 +19,7 @@ import searchengine.repository.IndexRepository;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Thread.sleep;
@@ -78,11 +75,11 @@ public class Parser extends RecursiveAction {
     public void compute() {
         if (isCanceled) return;
         try {
-
+//            log.info(url);
             List<Parser> tasks = new ArrayList<>();
             Connection connection = Jsoup.connect(url).timeout(20_000)
-                    .userAgent("AdvancedSearchBot")
-                    .referrer("http://www.google.com/");
+                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .referrer("http://www.google.com");
 
             Page curPage = addPage(connection);
             if (curPage == null) return;
@@ -101,7 +98,6 @@ public class Parser extends RecursiveAction {
                 if (isCorrect(child)) {
                     Parser parser = new Parser(child, root, indexToDb, pagesToDb, lemmaToDb);
                     tasks.add(parser);
-                    log.info("Temp: " + child);
                 }
             }
             ForkJoinTask.invokeAll(tasks);
@@ -110,46 +106,56 @@ public class Parser extends RecursiveAction {
         }
     }
 
+    private String shortLink(String url) {
+        log.info(url);
+        url = url.replace(root, "");
+        url = url.toLowerCase(Locale.ROOT);
+        String regex = ".+\\w/";
+        if (url.matches(regex)) {
+            url = url.substring(0, url.length() - 1);
+            return url;
+        }
+        return url;
+    }
+
     public boolean isCorrect(String child) {
         return child.contains(root)
+                && !pagesToDb.containsKey(shortLink(child))
                 && !child.contains("#")
                 && !child.contains("?")
-                && !child.matches(".+(.jpg|.png|.pdf)$");
+                && !child.matches(".+(.jpg|.png|.pdf)$")
+                && !child.matches(".+(.jpg/|.png/|.pdf/)$");
     }
 
     //добавляем страницы
     private Page addPage(Connection connection) throws IOException {
         synchronized (pagesToDb) {
-            String shortLink = shortLink(url);
-
-            if (pagesToDb.containsKey(shortLink)) {
-                log.error("ВЫКИДЫВАЕМ: " + shortLink);
-                return null;
-            }
-
-            Page page = new Page();
-            page.setPath(shortLink);
-
             try {
+                String shortLink = shortLink(url);
+
+                if (pagesToDb.containsKey(shortLink)) {
+                    return null;
+                }
+
                 connection.ignoreHttpErrors(true);
                 Connection.Response response = connection.execute();
                 int status = response.statusCode();
-
-                if (status != 200 && (response.contentType() == null || !response.contentType().equals("html/text")))
-                    throw new UnsupportedMimeTypeException("error", "unknown type", response.url().toString());
-
+                if (response.statusMessage().equals("Not Found")) {
+                    return null;
+                }
+                if (status != 200 && (response.contentType() == null
+                        || !response.contentType().equals("text/html"))) {
+                    return null;
+                }
+                Page page = new Page();
+                page.setPath(shortLink);
                 page.setCode(status);
                 page.setContext(response.body());
                 pagesToDb.put(shortLink, page);
                 log.info("Ссылка - " + shortLink);
-                int i = countPages();
-                log.warn(String.valueOf(i));
                 return page;
-            } catch (UnsupportedMimeTypeException mimeTypeEx) {
-                log.warn(mimeTypeEx.getUrl() + " - unsupported type: photo,gif, etc.");
-                return null;
             } catch (IOException e) {
-                log.error("During addPage: " + e.getMessage());
+                log.error("Ошибка подключения: " + e.getMessage());
                 return null;
             }
         }
@@ -160,7 +166,6 @@ public class Parser extends RecursiveAction {
             Map<Lemma, Integer> threadLemma = new HashMap<>();
 
             for (Field field : fields) {
-//                log.info("Field: " + field);
                 Elements select = doc.select(field.getSelector());
                 String cleanPage = Jsoup.clean(select.toString(), Safelist.none());
 
@@ -189,34 +194,29 @@ public class Parser extends RecursiveAction {
     private Set<Index> addIndex(Page page, Map<Lemma, Integer> lemmaMap) {
         synchronized (indexToDb) {
             Map<Pair<String, String>, Index> indexesThread = new ConcurrentHashMap<>();
-            if (page.getCode() == 200) {
-                for (Field field : fields) {
-                    lemmaMap.forEach((lemma, amount) -> {
-                        Pair<String, String> key = Pair.of(shortLink(url), lemma.getLemma());
-                        Index index = indexesThread.get(key);
-                        if (index != null) index.setRank(index.getRank() + field.getWeight() * amount);
-                        else {
-                            index = new Index();
-                            index.setPage(page);
-                            index.setLemma(lemma);
-                            index.setRank(field.getWeight() * amount);
-                        }
-                        indexesThread.put(key, index);
-                    });
-                }
-                indexToDb.putAll(indexesThread);
+            for (Field field : fields) {
+                lemmaMap.forEach((lemma, amount) -> {
+                    Pair<String, String> key = Pair.of(shortLink(url), lemma.getLemma());
+                    Index index = indexesThread.get(key);
+                    if (index != null) index.setRank(index.getRank() + field.getWeight() * amount);
+                    else {
+                        index = new Index();
+                        index.setPage(page);
+                        index.setLemma(lemma);
+                        index.setRank(field.getWeight() * amount);
+                    }
+                    indexesThread.put(key, index);
+                });
             }
+            indexToDb.putAll(indexesThread);
+
             return new HashSet<>(indexesThread.values());
         }
     }
 
-    private String shortLink(String url) {
-        return url.replace(root, "");
-    }
-
 
     public List<Index> getIndexToDb() {
-        return new ArrayList<>(indexToDb.values());
+        return new CopyOnWriteArrayList<>(indexToDb.values());
     }
 
     public static void setIsCanceled(boolean isCanceled) {
@@ -230,4 +230,4 @@ public class Parser extends RecursiveAction {
     public int countLemmas() {
         return lemmaToDb.size();
     }
- }
+}

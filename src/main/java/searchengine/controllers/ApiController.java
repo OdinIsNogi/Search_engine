@@ -34,6 +34,11 @@ public class ApiController {
                                  @RequestParam(required = false) String site,
                                  @RequestParam(required = false, defaultValue = "0") int offset,
                                  @RequestParam(required = false, defaultValue = "20") int limit) throws IOException {
+
+        if (query.isBlank()) {
+            return new SearchResponse(false, "Задан пустой поисковой запрос");
+        }
+
         SearchResponse response = searchService.search(query, site, offset, limit);
         System.out.println(response);
         return response;

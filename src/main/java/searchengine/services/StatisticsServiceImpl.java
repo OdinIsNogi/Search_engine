@@ -31,13 +31,15 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Autowired
     private final SiteRepository siteRepository;
     @Autowired
+    private final IndexServiceImpl indexService;
+    @Autowired
     private SitesList sites;
 
 
     @Override
     public StatisticsResponse getStatistics() {
-//        List<Site> sitesList = siteRepository.findAll();
-        List<Site> sitesList = sites.getSites();
+        List<Site> sitesList = indexService.getSitesList().getSites();
+
         TotalStatistics total = new TotalStatistics();
         total.setSites(sitesList.size());
         total.setIndexing(true);

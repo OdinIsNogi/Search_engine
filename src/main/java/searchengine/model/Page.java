@@ -40,12 +40,12 @@ public class Page {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Page page = (Page) o;
-        return code == page.code && Objects.equals(id, page.id) && Objects.equals(path, page.path) && Objects.equals(context, page.context);
+        return code == page.code && Objects.equals(site, page.site) && Objects.equals(path, page.path) && Objects.equals(context, page.context);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, path, code, context);
+        return Objects.hash(site, path, code, context);
     }
 
     @Override

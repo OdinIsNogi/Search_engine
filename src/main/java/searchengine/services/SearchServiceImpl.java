@@ -25,9 +25,7 @@ public class SearchServiceImpl implements SearchService {
     private PageRepository pageRepository;
     @Autowired
     private SiteRepository siteRepository;
-    @Autowired
-    private SitesList sitesList;
-    private String query;
+
     private List<RelevantPage> relevantPages;
 
 
@@ -36,9 +34,9 @@ public class SearchServiceImpl implements SearchService {
         relevantPages = new ArrayList<>();
         List<Site> sites = siteRepository.findAll();
 
-        if (query.isBlank()) {
-            return new SearchResponse(false, "Задан пустой поисковой запрос");
-        }
+//        if (query.isBlank()) {
+//            return new SearchResponse(false, "Задан пустой поисковой запрос");
+//        }
 
         if (site == null) {
             for (Site s : sites) {

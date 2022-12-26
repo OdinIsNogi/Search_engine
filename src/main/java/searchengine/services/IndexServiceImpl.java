@@ -47,9 +47,9 @@ public class IndexServiceImpl implements IndexService {
     @Override
     public IndexResponse startIndexing() throws SQLException {
         List<Site> sites = sitesList.getSites();
-        if (isIndexing) {
-            return new IndexResponse(true, "Индексация уже запущена");
-        }
+//        if (isIndexing) {
+//            return new IndexResponse(true, "Индексация уже запущена");
+//        }
 
         for (Site s : sites) {
             if (s.getStatus() == Status.INDEXING) continue;
@@ -60,11 +60,11 @@ public class IndexServiceImpl implements IndexService {
 
     private void prepareForIndexing(Site site) throws SQLException {
         isIndexing = true;
-//        Site siteToDelete = siteRepository.findByUrl(site.getUrl());
-        executorService = Executors.newWorkStealingPool();
-        if (site != null) {
-            lemmaRepository.deleteAllBySiteId(site.getId());
-            pageRepository.deleteAllBySiteId(site.getId());
+        Site siteToDelete = siteRepository.findByUrl(site.getUrl());
+        executorService = Executors.newFixedThreadPool(sitesList.getSites().size());
+        if (siteToDelete != null) {
+            lemmaRepository.deleteAllBySiteId(siteToDelete.getId());
+            pageRepository.deleteAllBySiteId(siteToDelete.getId());
             siteRepository.deleteByUrl(site.getUrl());
         }
 
@@ -90,6 +90,7 @@ public class IndexServiceImpl implements IndexService {
             Parser.setFields(fieldRepository.findAll());
             Parser parser = new Parser(site.getUrl());
             site.setParser(parser);
+            site.setId(siteRepository.findByUrl(site.getUrl()).getId());
             ForkJoinPool pool = ForkJoinPool.commonPool();
             pool.invoke(parser);
 
@@ -108,7 +109,7 @@ public class IndexServiceImpl implements IndexService {
             if (!stopped) {
                 site.setStatus(Status.INDEXED);
             }
-
+            isIndexing = false;
         } catch (Exception e) {
             site.setStatus(Status.FAILED);
             site.setLastError(e.getMessage());
@@ -122,10 +123,10 @@ public class IndexServiceImpl implements IndexService {
 
     public IndexResponse stopIndexing() {
 
-        if (!isIndexing) {
-            System.out.println("Не запущена");
-            return new IndexResponse(false, "Индексация не запущена");
-        }
+//        if (!isIndexing) {
+//            System.out.println("Не запущена");
+//            return new IndexResponse(false, "Индексация не запущена");
+//        }
         Parser.setIsCanceled(true);
         isIndexing = false;
         stopped = true;
@@ -139,24 +140,21 @@ public class IndexServiceImpl implements IndexService {
 
 
     public IndexResponse indexPage(String url) throws SQLException {
-        List<Site> sites = sitesList.getSites();
-        if (url.isBlank()) return new IndexResponse(false, "Задан пустой запрос");
+        Site site = siteRepository.findByUrl(url);
+//        List<Site> sites = siteRepository.findAll();
+//        if (url.isBlank()) return new IndexResponse(false, "Задан пустой запрос");
 
-        List<Site> sitesForIndex = sites.stream().filter(s -> s.getUrl().equals(url)).collect(Collectors.toList());
+//        List<Site> sitesForIndex = sites.stream().filter(s -> s.getUrl().equals(url)).collect(Collectors.toList());
 
-        for (Site site : sitesForIndex) {
-            if (site.getStatus() == Status.INDEXING) {
-                System.out.println("Уже запущена");
-                return new IndexResponse(true, "Индексация уже запущена");
-            } else {
-                prepareForIndexing(site);
-                return new IndexResponse(true);
-            }
-
-        }
-        System.out.println("Левая ссылка");
-        return new IndexResponse(false, "Данная страница находится за пределами сайтов," +
-                "указанных в конфигурационном файле");
+//        for (Site site : sites) {
+//            if (site.getStatus() == Status.INDEXING) {
+//                return new IndexResponse(true, "Индексация уже запущена");
+//            } else {
+        prepareForIndexing(site);
+        return new IndexResponse(true);
+//            }
+//        return new IndexResponse(false, "Данная страница находится за пределами сайтов," +
+//                "указанных в конфигурационном файле");
     }
 
     @Override
@@ -189,5 +187,11 @@ public class IndexServiceImpl implements IndexService {
         indexRepository.deleteAll();
     }
 
+    public SitesList getSitesList() {
+        return sitesList;
+    }
 
+    public boolean isIndexing() {
+        return isIndexing;
+    }
 }
