@@ -4,11 +4,11 @@ spring:
   liquibase:
     enabled: true
   datasource:
-    hikari:
-      auto-commit: false
-    url: jdbc:mysql://localhost:3306/search_engine?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: ПИФСЛ
+#    hikari:
+#      auto-commit: false
+    url: jdbc:postgresql://localhost:5432/search_engine?reWriteBatchedInserts=true&stringtype=unspecified&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: postgres
+    password: GBACK
   jpa:
     hibernate:
       ddl-auto: validate
@@ -18,7 +18,7 @@ spring:
       hibernate:
         jdbc:
           batch_size: 30
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         enable_lazy_load_no_trans: true
         order_inserts: true
         generate_statistics: true
@@ -34,10 +34,10 @@ indexing-settings:
   sites:
 #    - url: http://www.playback.ru/
 #      name: playback
-#    - url: https://metanit.com
-#      name: meta
-    - url: https://skillbox.ru/
-      name: skill
+    - url: https://metanit.com
+      name: meta
+#    - url: https://skillbox.ru/
+#      name: skill
 
 
 

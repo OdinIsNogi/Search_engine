@@ -21,13 +21,14 @@ import java.util.Set;
 public class Site {
     @Id
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+    @SequenceGenerator(name = "seq",sequenceName = "seq_id",allocationSize = 0)
     private long id;
 
     private transient Parser parser;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "ENUM('M','S')", nullable = false)
+//    @Column(name = "status", columnDefinition = "ENUM('M','S')", nullable = false)
     private Status status;
 
     @Column(name = "status_time", nullable = false)

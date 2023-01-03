@@ -13,8 +13,8 @@ databaseChangeLog:
 #                  descending: true
                   name: site_id
             indexName: idx_path
-            schemaName: search_engine
+            schemaName: public
             tableName: pages
-            tablespace: A String
+#            tablespace: A String
             unique: true
 

@@ -27,7 +27,7 @@ public class Application {
 
 //        parser.compute();
 //        index.indexPage("https://skillbox.ru/media/design/Shinolebedi/-4");
-//        index.startIndexing();
+        index.startIndexing();
 
 
 //                Thread t = new Thread(new Runnable() {

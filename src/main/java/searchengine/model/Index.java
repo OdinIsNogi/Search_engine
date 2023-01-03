@@ -16,7 +16,8 @@ import java.util.Objects;
 @Table(name = "`index`")
 public class Index {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+    @SequenceGenerator(name = "seq",sequenceName = "seq_id",allocationSize = 0)
     @Column(nullable = false)
     private long id;
 

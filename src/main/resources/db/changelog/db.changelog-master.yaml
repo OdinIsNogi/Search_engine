@@ -1,5 +1,9 @@
 databaseChangeLog:
   - include:
+      - file: db/changelog/changeset/create-sequence-id.yaml
+  - include:
+      - file: db/changelog/changeset/create-enum-type.xml
+  - include:
       - file: db/changelog/changeset/create-site-table.yaml
   - include:
       - file: db/changelog/changeset/create-page-table.yaml

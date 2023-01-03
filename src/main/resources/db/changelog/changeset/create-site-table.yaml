@@ -16,7 +16,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: status
-                  type: ENUM('INDEXING', 'INDEXED', 'FAILED')
+                  type: enum
                   constraints:
                     nullable: false
               - column:

@@ -13,6 +13,6 @@ databaseChangeLog:
                   descending: true
                   name: site_id
             indexName: idx_lemma
-            schemaName: search_engine
+            schemaName: public
             tableName: lemma
             unique: true

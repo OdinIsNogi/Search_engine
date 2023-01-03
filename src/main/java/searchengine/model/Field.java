@@ -17,7 +17,8 @@ import java.util.Objects;
 @Table(name = "field")
 public class Field {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+    @SequenceGenerator(name = "seq",sequenceName = "seq_id",allocationSize = 0)
     @Column(nullable = false)
     private long id;
 
@@ -27,7 +28,7 @@ public class Field {
         this.weight = weight;
     }
 
-    @Column( nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)

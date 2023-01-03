@@ -1,0 +1,18 @@
+databaseChangeLog:
+ - changeSet:
+    id:  createSequence-
+    author:  liquibase-docs
+    changes:
+      - createSequence:
+         cacheSize:  371717
+         catalogName:  seq_id
+         cycle: false
+         dataType:  BIGINT
+         incrementBy:  1
+#         maxValue: false
+         minValue:  1
+#         ordered:  false
+#         schemaName:  public
+         cache: 30
+         sequenceName:  seq_id
+         startValue:  1

@@ -4,25 +4,17 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jsoup.Connection;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
-import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
-import org.springframework.stereotype.Component;
 import searchengine.model.*;
-import searchengine.repository.IndexRepository;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.lang.Thread.sleep;
 
 /**
  * Обходим страницы сайта и заполняем сущности для передачи в Базу данных.
@@ -109,12 +101,12 @@ public class Parser extends RecursiveAction {
     private String shortLink(String url) {
         log.info(url);
         url = url.replace(root, "");
-        url = url.toLowerCase(Locale.ROOT);
-        String regex = ".+\\w/";
-        if (url.matches(regex)) {
-            url = url.substring(0, url.length() - 1);
-            return url;
-        }
+//        url = url.toLowerCase(Locale.ROOT);
+//        String regex = ".+\\w/";
+//        if (url.matches(regex)) {
+//            url = url.substring(0, url.length() - 1);
+//            return url;
+//        }
         return url;
     }
 

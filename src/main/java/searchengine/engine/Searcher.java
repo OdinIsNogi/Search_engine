@@ -144,8 +144,6 @@ public class Searcher {
                 }
             }
         }
-
-
         return result.toString();
     }
 
@@ -159,11 +157,9 @@ public class Searcher {
                 .forEach(e -> result.put(e.getKey(), e.getValue()));
         return result;
     }
-
     public List<Lemma> getUniqueLemma() {
         return uniqueLemma;
     }
-
     public LemmaRepository getlRepository() {
         return lRepository;
     }
