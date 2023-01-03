@@ -17,11 +17,13 @@ spring:
     properties:
       hibernate:
         jdbc:
-          batch_size: 30
+          batch_size: 50
+          fetch_size: 50
         dialect: org.hibernate.dialect.PostgreSQLDialect
         enable_lazy_load_no_trans: true
         order_inserts: true
         generate_statistics: true
+        order_updates: true
     open-in-view: false
 
 logging:

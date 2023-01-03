@@ -21,8 +21,7 @@ import java.util.Set;
 public class Site {
     @Id
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @SequenceGenerator(name = "seq",sequenceName = "seq_id",allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private transient Parser parser;

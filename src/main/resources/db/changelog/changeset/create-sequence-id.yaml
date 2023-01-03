@@ -1,6 +1,6 @@
 databaseChangeLog:
  - changeSet:
-    id:  createSequence-
+    id:  createSequence
     author:  liquibase-docs
     changes:
       - createSequence:

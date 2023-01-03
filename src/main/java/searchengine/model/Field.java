@@ -17,8 +17,8 @@ import java.util.Objects;
 @Table(name = "field")
 public class Field {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @SequenceGenerator(name = "seq",sequenceName = "seq_id",allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(nullable = false)
     private long id;
 
