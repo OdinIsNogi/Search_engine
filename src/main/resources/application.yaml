@@ -34,10 +34,10 @@ logging:
 
 indexing-settings:
   sites:
-#    - url: http://www.playback.ru/
-#      name: playback
-    - url: https://metanit.com
-      name: meta
+    - url: http://www.playback.ru/
+      name: playback
+#    - url: https://metanit.com
+#      name: meta
 #    - url: https://skillbox.ru/
 #      name: skill
 

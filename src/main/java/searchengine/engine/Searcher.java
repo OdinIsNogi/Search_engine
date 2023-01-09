@@ -34,7 +34,6 @@ public class Searcher {
             System.out.println("Поиск не дал результатов");
         }
     }
-
     public List<RelevantPage> getFoundPages() {
         return foundPages;
     }
@@ -156,11 +155,5 @@ public class Searcher {
         st.sorted(Map.Entry.comparingByValue())
                 .forEach(e -> result.put(e.getKey(), e.getValue()));
         return result;
-    }
-    public List<Lemma> getUniqueLemma() {
-        return uniqueLemma;
-    }
-    public LemmaRepository getlRepository() {
-        return lRepository;
     }
 }

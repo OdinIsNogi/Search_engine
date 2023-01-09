@@ -38,7 +38,6 @@ public class Lemmatizer {
             }
 
             String lemmaWordForm = luceneMorphology.getNormalForms(word).get(0);
-//            String form = lemmaWordForm.replace("ё", "е");
             if (!check(wordInfo(lemmaWordForm)) && lemmaWordForm.length() > 1) {
                 if (lemmas.containsKey(lemmaWordForm)) {
                     lemmas.put(lemmaWordForm, lemmas.get(lemmaWordForm) + 1);

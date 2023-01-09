@@ -34,10 +34,6 @@ public class SearchServiceImpl implements SearchService {
         relevantPages = new ArrayList<>();
         List<Site> sites = siteRepository.findAll();
 
-//        if (query.isBlank()) {
-//            return new SearchResponse(false, "Задан пустой поисковой запрос");
-//        }
-
         if (site == null) {
             for (Site s : sites) {
                 relevantPages.addAll(new Searcher(query, lemmaRepository, s.getId()).getFoundPages());

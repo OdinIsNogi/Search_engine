@@ -24,6 +24,9 @@ import java.util.concurrent.*;
 @Slf4j
 public class Parser extends RecursiveAction {
 
+    private static final ConcurrentHashMap<String, Boolean> arr = new ConcurrentHashMap<>();
+    private static final Set<String> parserExist = arr.keySet();
+
     private final String url;
     private final String root;
     private static boolean isCanceled;
@@ -67,7 +70,7 @@ public class Parser extends RecursiveAction {
     public void compute() {
         if (isCanceled) return;
         try {
-//            log.info(url);
+
             List<Parser> tasks = new ArrayList<>();
             Connection connection = Jsoup.connect(url).timeout(20_000)
                     .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
@@ -88,7 +91,10 @@ public class Parser extends RecursiveAction {
             for (Element e : elements) {
                 String child = e.absUrl("href");
                 if (isCorrect(child)) {
+                    if (parserExist.contains(child)) continue;
                     Parser parser = new Parser(child, root, indexToDb, pagesToDb, lemmaToDb);
+                    parserExist.add(child);
+                    log.error(child);
                     tasks.add(parser);
                 }
             }
@@ -99,14 +105,7 @@ public class Parser extends RecursiveAction {
     }
 
     private String shortLink(String url) {
-        log.info(url);
         url = url.replace(root, "");
-//        url = url.toLowerCase(Locale.ROOT);
-//        String regex = ".+\\w/";
-//        if (url.matches(regex)) {
-//            url = url.substring(0, url.length() - 1);
-//            return url;
-//        }
         return url;
     }
 
